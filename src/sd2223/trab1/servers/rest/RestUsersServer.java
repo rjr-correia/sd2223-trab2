@@ -15,7 +15,7 @@ import javax.net.ssl.SSLContext;
 
 
 public class RestUsersServer extends AbstractRestServer {
-	public static final int PORT = 13455;
+	public static final int PORT = 3455;
 	static final String SERVER_URI_FMT = "https://%s:%s/rest";
 
 
