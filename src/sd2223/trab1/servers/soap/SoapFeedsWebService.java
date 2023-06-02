@@ -7,7 +7,9 @@ import sd2223.trab1.api.Message;
 import sd2223.trab1.api.java.Feeds;
 import sd2223.trab1.api.soap.FeedsException;
 import sd2223.trab1.api.soap.FeedsService;
+import sd2223.trab1.api.soap.UsersService;
 
+@WebService(serviceName= FeedsService.NAME, targetNamespace=FeedsService.NAMESPACE, endpointInterface=FeedsService.INTERFACE)
 public class SoapFeedsWebService<T extends Feeds> extends SoapWebService<FeedsException> implements FeedsService {
 
 	final protected T impl;

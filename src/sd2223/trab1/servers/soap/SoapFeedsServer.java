@@ -39,6 +39,7 @@ public class SoapFeedsServer extends AbstractSoapServer<SoapFeedsWebService<?>> 
 		server.setHttpsConfigurator(new HttpsConfigurator(SSLContext.getDefault()));
 		var URI = String.format(SERVER_URI_FMT, ip, PORT);
 
+		//var endpoint = Endpoint.create(new SoapUsersWebService());
 		var endpoint = Endpoint.create(new SoapFeedsWebService(new RestFeedsClient(URI)));
 		endpoint.publish(server.createContext("/soap"));
 
