@@ -6,6 +6,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 import sd2223.trab1.api.java.Users;
 import sd2223.trab1.servers.Domain;
+import utils.Args;
 
 
 public class RestUsersServer extends AbstractRestServer {
@@ -28,6 +29,7 @@ public class RestUsersServer extends AbstractRestServer {
 	
 	public static void main(String[] args) throws Exception {
 
+		Args.use(args);
 		Domain.set( args[0], Long.valueOf(args[1]));
 		new RestUsersServer().start();
 	}	
