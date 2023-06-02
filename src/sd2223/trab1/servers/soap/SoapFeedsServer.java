@@ -11,7 +11,7 @@ import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsServer;
 import jakarta.xml.ws.Endpoint;
 import sd2223.trab1.api.java.Feeds;
-import sd2223.trab1.clients.rest.RestFeedsClient;
+import sd2223.trab1.clients.soap.SoapFeedsClient;
 import sd2223.trab1.servers.Domain;
 import utils.Args;
 
@@ -40,7 +40,7 @@ public class SoapFeedsServer extends AbstractSoapServer<SoapFeedsWebService<?>> 
 		var URI = String.format(SERVER_URI_FMT, ip, PORT);
 
 		//var endpoint = Endpoint.create(new SoapUsersWebService());
-		var endpoint = Endpoint.create(new SoapFeedsWebService(new RestFeedsClient(URI)));
+		var endpoint = Endpoint.create(new SoapFeedsWebService(new SoapFeedsClient(URI)));
 		endpoint.publish(server.createContext("/soap"));
 
 		server.start();
