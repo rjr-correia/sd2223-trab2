@@ -38,7 +38,7 @@ public class RestUsersServer extends AbstractRestServer {
 
 		Args.use(args);
 		Domain.set( args[0], Long.valueOf(args[1]));
-		//new RestUsersServer().start();
+		new RestUsersServer().start();
 		var config = new ResourceConfig();
 		config.register(RestUsersResource.class);
 
