@@ -1,6 +1,8 @@
 package sd2223.trab1.servers.rest;
 
+import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
 
@@ -19,20 +21,28 @@ import javax.net.ssl.SSLContext;
 public abstract class AbstractRestServer extends AbstractServer {
 	
 	private static final String REST_CTX = "/rest";
+	static final String SERVER_URI_FMT = "https://%s:%s/rest";
+	private int port;
 
 	protected AbstractRestServer(Logger log, String service, int port) {
 		super(log, service, String.format(SERVER_BASE_URI, IP.hostAddress(), port, REST_CTX));
+
+		this.port = port;
 	}
 
 
-	protected void start() throws NoSuchAlgorithmException {
+	protected void start() throws NoSuchAlgorithmException, UnknownHostException {
 
 		HttpsURLConnection.setDefaultHostnameVerifier(new InsecureHostnameVerifier());
 		ResourceConfig config = new ResourceConfig();
+		config.register(RestUsersResource.class);
+
+		var ip = InetAddress.getLocalHost().getHostAddress();
+
+		var serverURI = URI.create(String.format(SERVER_URI_FMT, ip, port));
+		JdkHttpServerFactory.createHttpServer( serverURI, config, SSLContext.getDefault());
 		
 		registerResources( config );
-		
-		JdkHttpServerFactory.createHttpServer( URI.create(serverURI.replace(IP.hostAddress(), INETADDR_ANY)), config, SSLContext.getDefault());
 		
 		Discovery.getInstance().announce(service, super.serverURI);
 		Log.info(String.format("%s Server ready @ %s\n",  service, serverURI));
