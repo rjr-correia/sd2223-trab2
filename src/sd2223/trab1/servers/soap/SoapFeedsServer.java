@@ -1,11 +1,19 @@
 package sd2223.trab1.servers.soap;
 
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.HttpsServer;
+import jakarta.xml.ws.Endpoint;
 import sd2223.trab1.api.java.Feeds;
 import sd2223.trab1.servers.Domain;
 import utils.Args;
+
+import javax.net.ssl.SSLContext;
 
 public class SoapFeedsServer extends AbstractSoapServer<SoapFeedsWebService<?>> {
 
@@ -17,8 +25,25 @@ public class SoapFeedsServer extends AbstractSoapServer<SoapFeedsWebService<?>> 
 	}
 
 	public static void main(String[] args) throws Exception {
-		Args.use(args);		
+		Args.use(args);
 		Domain.set( args[0], Long.valueOf(args[1]));
-		new SoapFeedsServer().start();
+		//new SoapFeedsServer().start();
+
+		var ip = InetAddress.getLocalHost().getHostAddress();
+
+		var server = HttpsServer.create(new InetSocketAddress(ip, PORT), 0);
+
+		server.setExecutor(Executors.newCachedThreadPool());
+		server.setHttpsConfigurator(new HttpsConfigurator(SSLContext.getDefault()));
+
+		var endpoint = Endpoint.create(new SoapUsersWebService());
+		endpoint.publish(server.createContext("/soap"));
+
+		server.start();
+
+
+
+
+
 	}
 }
