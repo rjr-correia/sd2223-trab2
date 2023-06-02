@@ -7,6 +7,7 @@ import java.util.List;
 
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import sd2223.trab1.api.User;
@@ -41,6 +42,33 @@ public class RestUsersClient extends RestClient implements Users {
 				.post(Entity.entity( user, MediaType.APPLICATION_JSON));
 
 		return super.toJavaResult(r, String.class);
+
+
+	}
+	private Result<User> clt_updateUser(String userid, String password, User user) {
+		Response r = target.path( userid )
+				.queryParam(UsersService.PWD, password).request()
+				.accept(MediaType.APPLICATION_JSON)
+				.put(Entity.entity(user, MediaType.APPLICATION_JSON));
+
+		return super.toJavaResult(r, User.class);
+	}
+
+	private Result<User> clt_deleteUser(String userid, String password) {
+		Response r = target.path( userid )
+				.queryParam(UsersService.PWD, password).request()
+				.accept(MediaType.APPLICATION_JSON)
+				.delete();
+
+		return super.toJavaResult(r, User.class);
+	}
+	private Result<List<User>> clt_searchUsers(String pattern) {
+		Response r = target
+				.queryParam(UsersService.QUERY, pattern).request()
+				.accept(MediaType.APPLICATION_JSON)
+				.get();
+
+		return super.toJavaResult(r, new GenericType<List<User>>() {});
 	}
 	
 	@Override
@@ -50,21 +78,21 @@ public class RestUsersClient extends RestClient implements Users {
 	
 	@Override
 	public Result<String> createUser(User user) {
-		return error(NOT_IMPLEMENTED);
+		return super.reTry(() -> clt_createUser(user));
 	}
 	
 	@Override
 	public Result<User> updateUser(String userId, String password, User user) {
-		return error(NOT_IMPLEMENTED);
+		return super.reTry(() -> clt_updateUser(userId, password, user));
 	}
 
 	@Override
 	public Result<User> deleteUser(String userId, String password) {
-		return error(NOT_IMPLEMENTED);
+		return super.reTry(() -> clt_deleteUser(userId, password));
 	}
 
 	@Override
 	public Result<List<User>> searchUsers(String pattern) {
-		return error(NOT_IMPLEMENTED);
+		return super.reTry(() -> clt_searchUsers(pattern));
 	}	
 }

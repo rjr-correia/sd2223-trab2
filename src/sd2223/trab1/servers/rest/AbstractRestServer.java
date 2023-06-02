@@ -1,6 +1,7 @@
 package sd2223.trab1.servers.rest;
 
 import java.net.URI;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
 
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
