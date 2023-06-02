@@ -42,9 +42,7 @@ public abstract class AbstractRestServer extends AbstractServer {
 
 		var serverURI = URI.create(String.format(SERVER_URI_FMT, ip, port));
 		JdkHttpServerFactory.createHttpServer( serverURI, config, SSLContext.getDefault());
-		
-		registerResources( config );
-		
+
 		Discovery.getInstance().announce(service, super.serverURI);
 		Log.info(String.format("%s Server ready @ %s\n",  service, serverURI));
 	}
