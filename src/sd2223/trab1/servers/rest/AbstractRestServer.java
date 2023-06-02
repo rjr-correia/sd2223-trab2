@@ -35,7 +35,8 @@ public abstract class AbstractRestServer extends AbstractServer {
 
 		HttpsURLConnection.setDefaultHostnameVerifier(new InsecureHostnameVerifier());
 		ResourceConfig config = new ResourceConfig();
-		config.register(RestUsersResource.class);
+
+		registerResources(config);
 
 		var ip = InetAddress.getLocalHost().getHostAddress();
 
