@@ -5,6 +5,8 @@ import static sd2223.trab1.api.java.Result.ok;
 import static sd2223.trab1.api.java.Result.ErrorCode.*;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -21,9 +23,11 @@ import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
 
+import sd2223.trab1.servers.Domain;
+import sd2223.trab1.servers.soap.SoapUsersServer;
 import utils.JSON;
 
-public class Mastodon implements Feeds {
+public class Mastodon implements Feeds{
 	
 	static String MASTODON_NOVA_SERVER_URI = "http://10.170.138.52:3000";
 	static String MASTODON_SOCIAL_SERVER_URI = "https://mastodon.social";
@@ -48,7 +52,17 @@ public class Mastodon implements Feeds {
 	protected OAuth2AccessToken accessToken;
 
 	private static Mastodon impl;
-	
+
+	private static Logger Log = Logger.getLogger(Mastodon.class.getName());
+
+
+	public static void main(String[] args) {
+		Domain.set( args[0], 0);
+		Log.setLevel(Level.INFO);
+		impl = new Mastodon();
+
+	}
+
 	protected Mastodon() {
 		try {
 			service = new ServiceBuilder(clientKey).apiSecret(clientSecret).build(MastodonApi.instance());
