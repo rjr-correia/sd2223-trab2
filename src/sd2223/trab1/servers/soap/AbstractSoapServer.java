@@ -42,7 +42,7 @@ public class AbstractSoapServer<T> extends AbstractServer {
 		server.setHttpsConfigurator(new HttpsConfigurator(SSLContext.getDefault()));
 
 		Endpoint endpoint = Endpoint.create(webservice);
-		Endpoint.publish(serverURI.replace(IP.hostAddress(), INETADDR_ANY), webservice );
+		endpoint.publish(serverURI.replace(IP.hostAddress(), INETADDR_ANY), webservice );
 
 		server.start();
 
