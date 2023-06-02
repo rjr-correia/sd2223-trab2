@@ -15,7 +15,7 @@ import javax.net.ssl.SSLContext;
 
 
 public class RestFeedsServer extends AbstractRestServer {
-	public static final int PORT = 4567;
+	public static final int PORT = 14566;
 	static final String SERVER_URI_FMT = "https://%s:%s/rest";
 
 	private static Logger Log = Logger.getLogger(RestFeedsServer.class.getName());
