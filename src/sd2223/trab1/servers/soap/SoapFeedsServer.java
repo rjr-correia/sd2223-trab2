@@ -31,20 +31,6 @@ public class SoapFeedsServer extends AbstractSoapServer<SoapFeedsWebService<?>> 
 		Args.use(args);
 		Domain.set( args[0], Long.valueOf(args[1]));
 
-		var ip = InetAddress.getLocalHost().getHostAddress();
-
-		var server = HttpsServer.create(new InetSocketAddress(ip, PORT), 0);
-
-		server.setExecutor(Executors.newCachedThreadPool());
-		server.setHttpsConfigurator(new HttpsConfigurator(SSLContext.getDefault()));
-		var URI = String.format(SERVER_URI_FMT, ip, PORT);
-
-		//var endpoint = Endpoint.create(new SoapUsersWebService());
-		var endpoint = Endpoint.create(new SoapFeedsWebService(new SoapFeedsClient(URI)));
-		endpoint.publish(server.createContext("/soap"));
-
-		server.start();
-
 		new SoapFeedsServer().start();
 
 

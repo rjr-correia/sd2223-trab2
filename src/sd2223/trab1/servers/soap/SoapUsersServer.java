@@ -27,19 +27,6 @@ public class SoapUsersServer extends AbstractSoapServer<SoapUsersWebService> {
 	public static void main(String[] args) throws Exception {		
 		Domain.set( args[0], 0);
 		Log.setLevel(Level.INFO);
-
-		var ip = InetAddress.getLocalHost().getHostAddress();
-
-		var server = HttpsServer.create(new InetSocketAddress(ip, PORT), 0);
-
-		server.setExecutor(Executors.newCachedThreadPool());
-		server.setHttpsConfigurator(new HttpsConfigurator(SSLContext.getDefault()));
-
-		var endpoint = Endpoint.create(new SoapUsersWebService());
-		endpoint.publish(server.createContext("/soap"));
-
-		server.start();
-
 		new SoapUsersServer().start();
 
 	}
