@@ -27,7 +27,6 @@ public class SoapUsersServer extends AbstractSoapServer<SoapUsersWebService> {
 	public static void main(String[] args) throws Exception {		
 		Domain.set( args[0], 0);
 		Log.setLevel(Level.INFO);
-		new SoapUsersServer().start();
 
 		var ip = InetAddress.getLocalHost().getHostAddress();
 
@@ -40,5 +39,8 @@ public class SoapUsersServer extends AbstractSoapServer<SoapUsersWebService> {
 		endpoint.publish(server.createContext("/soap"));
 
 		server.start();
+
+		new SoapUsersServer().start();
+
 	}
 }

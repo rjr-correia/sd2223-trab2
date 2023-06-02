@@ -38,12 +38,13 @@ public class RestUsersServer extends AbstractRestServer {
 
 		Args.use(args);
 		Domain.set( args[0], Long.valueOf(args[1]));
-		new RestUsersServer().start();
 		var config = new ResourceConfig();
 		config.register(RestUsersResource.class);
 
 		var ip = InetAddress.getLocalHost().getHostAddress();
 		var serverURI = URI.create(String.format(SERVER_URI_FMT, ip, PORT));
 		JdkHttpServerFactory.createHttpServer( serverURI, config, SSLContext.getDefault());
+		new RestUsersServer().start();
+
 	}	
 }

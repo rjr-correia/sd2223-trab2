@@ -27,7 +27,6 @@ public class SoapFeedsServer extends AbstractSoapServer<SoapFeedsWebService<?>> 
 	public static void main(String[] args) throws Exception {
 		Args.use(args);
 		Domain.set( args[0], Long.valueOf(args[1]));
-		new SoapFeedsServer().start();
 
 		var ip = InetAddress.getLocalHost().getHostAddress();
 
@@ -41,6 +40,7 @@ public class SoapFeedsServer extends AbstractSoapServer<SoapFeedsWebService<?>> 
 
 		server.start();
 
+		new SoapFeedsServer().start();
 
 
 
