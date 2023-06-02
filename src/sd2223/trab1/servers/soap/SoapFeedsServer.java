@@ -21,7 +21,6 @@ public class SoapFeedsServer extends AbstractSoapServer<SoapFeedsWebService<?>> 
 
 	public static final int PORT = 14567;
 	private static Logger Log = Logger.getLogger(SoapFeedsServer.class.getName());
-	static final String SERVER_URI_FMT = "https://%s:%s/soap";
 
 	protected SoapFeedsServer() {
 		super(false, Log, Feeds.SERVICENAME, PORT,  Args.valueOf("-push", true) ? new SoapFeedsPushWebService() : new SoapFeedsPullWebService() );
