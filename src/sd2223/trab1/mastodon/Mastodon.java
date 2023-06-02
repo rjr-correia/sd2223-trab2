@@ -56,12 +56,6 @@ public class Mastodon implements Feeds{
 	private static Logger Log = Logger.getLogger(Mastodon.class.getName());
 
 
-	public static void main(String[] args) {
-		Domain.set( args[0], 0);
-		Log.setLevel(Level.INFO);
-		impl = new Mastodon();
-
-	}
 
 	protected Mastodon() {
 		try {
