@@ -43,27 +43,27 @@ public class RestFeedsClient extends RestClient implements Feeds {
 
 	@Override
 	public Result<Long> postMessage(String user, String pwd, Message msg) {
-		return error( NOT_IMPLEMENTED );
+		return super.reTry(() -> clt_postMessage(user, pwd, msg));
 	}
 
 	@Override
 	public Result<Void> removeFromPersonalFeed(String user, long mid, String pwd) {
-		return error( NOT_IMPLEMENTED );
+		return super.reTry(() -> clt_removeFromPersonalFeed(user, mid, pwd));
 	}
 
 	@Override
 	public Result<Void> subUser(String user, String userSub, String pwd) {
-		return error( NOT_IMPLEMENTED );
+		return super.reTry(() -> clt_subUser(user, userSub, pwd));
 	}
 
 	@Override
 	public Result<Void> unsubscribeUser(String user, String userSub, String pwd) {
-		return error( NOT_IMPLEMENTED );
+		return super.reTry(() -> clt_unsubscribeUser(user, userSub, pwd));
 	}
 
 	@Override
 	public Result<List<String>> listSubs(String user) {
-		return error( NOT_IMPLEMENTED );
+		return super.reTry(() -> clt_listSubs(user));
 	}
 
 		
@@ -90,5 +90,49 @@ public class RestFeedsClient extends RestClient implements Feeds {
 				.delete();
 
 		return super.toJavaResult(r, Void.class);
+	}
+
+	private Result<Long> clt_postMessage(String username, String pwd, Message msg) {
+		Response r = target.path(username)
+				.queryParam(FeedsService.PWD, pwd).request()
+				.accept(MediaType.APPLICATION_JSON)
+				.post(Entity.entity(msg, MediaType.APPLICATION_JSON));
+
+		return super.toJavaResult(r, Long.class);
+	}
+
+	private Result<Void> clt_removeFromPersonalFeed(String user, long mid, String pwd) {
+		Response r = target.path(user + "/" + mid)
+				.queryParam(FeedsService.PWD, pwd).request()
+				.accept(MediaType.APPLICATION_JSON)
+				.delete();
+
+		return super.toJavaResult(r, Void.class);
+
+	}
+	private Result<Void> clt_subUser(String username, String userSub, String pwd) {
+		Response r = target.path("sub/" + username + "/" + userSub)
+				.queryParam(FeedsService.PWD, pwd).request()
+				.accept(MediaType.APPLICATION_JSON)
+				.post(null);
+
+		return super.toJavaResult(r, Void.class);
+	}
+	private Result<Void> clt_unsubscribeUser(String username, String userSub, String pwd) {
+		Response r = target.path("sub/" + username + "/" + userSub)
+				.queryParam(FeedsService.PWD, pwd).request()
+				.accept(MediaType.APPLICATION_JSON)
+				.delete();
+
+		return super.toJavaResult(r, Void.class);
+	}
+
+	private Result<List<String>> clt_listSubs(String user) {
+		Response r = target.path("sub/list/" + user)
+				.request()
+				.accept(MediaType.APPLICATION_JSON)
+				.delete();
+
+		return super.toJavaResult(r, new GenericType<List<String>>() {});
 	}
 }

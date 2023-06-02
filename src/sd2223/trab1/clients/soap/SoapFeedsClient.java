@@ -53,21 +53,21 @@ public class SoapFeedsClient<T extends FeedsService> extends SoapClient implemen
 
 	@Override
 	public Result<Long> postMessage(String user, String pwd, Message msg) {
-		return error(NOT_IMPLEMENTED);
+		return super.reTry( () -> super.toJavaResult( () -> stub().postMessage(user, pwd, msg) ) );
 	}
 
 	@Override
 	public Result<Void> subUser(String user, String userSub, String pwd) {
-		return error(NOT_IMPLEMENTED);
+		return super.reTry( () -> super.toJavaResult( () -> stub().subUser(user, userSub, pwd) ) );
 	}
 
 	@Override
 	public Result<Void> unsubscribeUser(String user, String userSub, String pwd) {
-		return error(NOT_IMPLEMENTED);
+		return super.reTry( () -> super.toJavaResult( () -> stub().unsubscribeUser(user, userSub, pwd) ) );
 	}
 
 	@Override
 	public Result<List<String>> listSubs(String user) {
-		return error(NOT_IMPLEMENTED);
+		return super.reTry( () -> super.toJavaResult( () -> stub().listSubs(user) ) );
 	}
 }
