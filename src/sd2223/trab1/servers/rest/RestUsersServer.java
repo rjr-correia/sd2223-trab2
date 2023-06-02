@@ -27,6 +27,7 @@ public class RestUsersServer extends AbstractRestServer {
 	
 	
 	public static void main(String[] args) throws Exception {
+
 		Domain.set( args[0], Long.valueOf(args[1]));
 		new RestUsersServer().start();
 	}	

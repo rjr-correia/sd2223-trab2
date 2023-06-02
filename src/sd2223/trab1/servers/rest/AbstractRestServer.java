@@ -10,6 +10,10 @@ import org.glassfish.jersey.server.ResourceConfig;
 import sd2223.trab1.discovery.Discovery;
 import sd2223.trab1.servers.java.AbstractServer;
 import utils.IP;
+import utils.InsecureHostnameVerifier;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
 
 
 public abstract class AbstractRestServer extends AbstractServer {
@@ -21,13 +25,14 @@ public abstract class AbstractRestServer extends AbstractServer {
 	}
 
 
-	protected void start() {
-		
+	protected void start() throws NoSuchAlgorithmException {
+
+		HttpsURLConnection.setDefaultHostnameVerifier(new InsecureHostnameVerifier());
 		ResourceConfig config = new ResourceConfig();
 		
 		registerResources( config );
 		
-		JdkHttpServerFactory.createHttpServer( URI.create(serverURI.replace(IP.hostAddress(), INETADDR_ANY)), config);
+		JdkHttpServerFactory.createHttpServer( URI.create(serverURI.replace(IP.hostAddress(), INETADDR_ANY)), config, SSLContext.getDefault());
 		
 		Discovery.getInstance().announce(service, super.serverURI);
 		Log.info(String.format("%s Server ready @ %s\n",  service, serverURI));
