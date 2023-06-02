@@ -45,8 +45,13 @@ public class Mastodon implements Feeds{
 	static final String SEARCH_ACCOUNTS_PATH = "/api/v1/accounts/search";
 	static final String ACCOUNT_FOLLOW_PATH = "/api/v1/accounts/%s/follow";
 	static final String ACCOUNT_UNFOLLOW_PATH = "/api/v1/accounts/%s/unfollow";
-	
+
+
+
 	private static final int HTTP_OK = 200;
+	private static final int HTTP_NOT_FOUND = 404;
+	private static final int HTTP_BAD_REQUEST = 400;
+
 
 	protected OAuth20Service service;
 	protected OAuth2AccessToken accessToken;
@@ -94,6 +99,13 @@ public class Mastodon implements Feeds{
 				var res = JSON.decode(response.getBody(), PostStatusResult.class);
 				return ok(res.getId());
 			}
+			if (response.getCode() == HTTP_NOT_FOUND) {
+				return error(NOT_FOUND);
+			}
+			if (response.getCode() == HTTP_BAD_REQUEST) {
+				return error(BAD_REQUEST);
+			}
+
 		} catch (Exception x) {
 			x.printStackTrace();
 		}
@@ -115,6 +127,14 @@ public class Mastodon implements Feeds{
 
 				return ok(res.stream().map(PostStatusResult::toMessage).toList());
 			}
+
+			if (response.getCode() == HTTP_NOT_FOUND) {
+				return error(NOT_FOUND);
+			}
+			if (response.getCode() == HTTP_BAD_REQUEST) {
+				return error(BAD_REQUEST);
+			}
+
 		} catch (Exception x) {
 			x.printStackTrace();
 		}
