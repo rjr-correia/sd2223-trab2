@@ -18,7 +18,6 @@ import javax.net.ssl.SSLContext;
 
 public class ProxyServer extends AbstractRestServer {
     public static final int PORT = 15790;
-    static final String SERVER_URI_FMT = "https://%s:%s/mastodon";
 
     private static Logger Log = Logger.getLogger(ProxyServer.class.getName());
 

@@ -34,9 +34,9 @@ public class Mastodon implements Feeds{
 	
 	static String MASTODON_SERVER_URI = MASTODON_NOVA_SERVER_URI;
 	
-	private static final String clientKey = "<create your own>";
-	private static final String clientSecret = "<create your own>";
-	private static final String accessTokenStr = "<create your own>";
+	private static final String clientKey = "hKcoCjq-Cjfgrs8E5GEBv2TdZSTU4acLrJL6JPepQlw";
+	private static final String clientSecret = "28-azi3iCJNCo6Vy7AHYFwdXUsw363VoyL8Dcfk9Od0";
+	private static final String accessTokenStr = "ztBowRMxYi5VR51vPlfj_ABMltXSOvuf_mFJw9Sx2KE";
 
 	static final String STATUSES_PATH= "/api/v1/statuses";
 	static final String TIMELINES_PATH = "/api/v1/timelines/home";
