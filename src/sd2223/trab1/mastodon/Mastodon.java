@@ -4,8 +4,10 @@ import static sd2223.trab1.api.java.Result.error;
 import static sd2223.trab1.api.java.Result.ok;
 import static sd2223.trab1.api.java.Result.ErrorCode.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,6 +16,7 @@ import com.google.gson.reflect.TypeToken;
 import sd2223.trab1.api.java.Feeds;
 import sd2223.trab1.api.Message;
 import sd2223.trab1.api.java.Result;
+import sd2223.trab1.mastodon.msgs.MastodonAccount;
 import sd2223.trab1.mastodon.msgs.PostStatusArgs;
 import sd2223.trab1.mastodon.msgs.PostStatusResult;
 
@@ -46,6 +49,7 @@ public class Mastodon implements Feeds {
     static final String SEARCH_ACCOUNTS_PATH = "/api/v1/accounts/search";
     static final String ACCOUNT_FOLLOW_PATH = "/api/v1/accounts/%s/follow";
     static final String ACCOUNT_UNFOLLOW_PATH = "/api/v1/accounts/%s/unfollow";
+    static final String LOOK_UP_PATH = "/api/v1/accounts/lookup?acct=%s";
 
 
     private static final int HTTP_OK = 200;
@@ -205,7 +209,17 @@ public class Mastodon implements Feeds {
     @Override
     public Result<Void> subUser(String user, String userSub, String pwd) {
         try {
-            final OAuthRequest request = new OAuthRequest(Verb.POST, getEndpoint(ACCOUNT_FOLLOW_PATH, user));
+
+            String userSplit = userSub.split("@")[0];
+
+            Result<String> userId = searchUser(userSplit);
+
+            if(!userId.isOK()) {
+
+                return error(userId.error());
+            }
+
+            final OAuthRequest request = new OAuthRequest(Verb.POST, getEndpoint(ACCOUNT_FOLLOW_PATH, userId.value()));
 
             service.signRequest(accessToken, request);
 
@@ -231,7 +245,17 @@ public class Mastodon implements Feeds {
     public Result<Void> unsubscribeUser(String user, String userSub, String pwd) {
 
         try {
-            final OAuthRequest request = new OAuthRequest(Verb.POST, getEndpoint(ACCOUNT_UNFOLLOW_PATH, user));
+
+            String userSplit = userSub.split("@")[0];
+
+            Result<String> userId = searchUser(userSplit);
+
+            if(!userId.isOK()) {
+
+                return error(userId.error());
+            }
+
+            final OAuthRequest request = new OAuthRequest(Verb.POST, getEndpoint(ACCOUNT_UNFOLLOW_PATH, userId.value()));
 
             service.signRequest(accessToken, request);
 
@@ -256,7 +280,17 @@ public class Mastodon implements Feeds {
     @Override
     public Result<List<String>> listSubs(String user) {
         try {
-            final OAuthRequest request = new OAuthRequest(Verb.GET, getEndpoint(ACCOUNT_FOLLOWING_PATH, user));
+
+            String userSplit = user.split("@")[0];
+
+            Result<String> userId = searchUser(userSplit);
+
+            if(!userId.isOK()) {
+
+                return error(userId.error());
+            }
+
+            final OAuthRequest request = new OAuthRequest(Verb.GET, getEndpoint(ACCOUNT_FOLLOWING_PATH, userId.value()));
 
             service.signRequest(accessToken, request);
 
@@ -286,7 +320,6 @@ public class Mastodon implements Feeds {
     public Result<Void> deleteUserFeed(String user) {
         try {
 
-
             Result<List<Message>> res = getMessages(user, 0);
             if(!res.isOK()) return error(res.error());
             List<Message> msgs = res.value();
@@ -309,6 +342,30 @@ public class Mastodon implements Feeds {
         } catch (Exception x) {
             x.printStackTrace();
         }
+        return error(Result.ErrorCode.INTERNAL_ERROR);
+    }
+
+    private Result<String> searchUser(String user) throws IOException, ExecutionException, InterruptedException {
+
+        final OAuthRequest request = new OAuthRequest(Verb.GET, getEndpoint(LOOK_UP_PATH, user));
+
+        service.signRequest(accessToken, request);
+
+        Response response = service.execute(request);
+
+        if (response.getCode() == HTTP_OK) {
+            var res = JSON.decode(response.getBody(), MastodonAccount.class);
+
+           return ok(res.id());
+        }
+
+        if (response.getCode() == HTTP_NOT_FOUND) {
+            return error(NOT_FOUND);
+        }
+        if (response.getCode() == HTTP_BAD_REQUEST) {
+            return error(BAD_REQUEST);
+        }
+
         return error(Result.ErrorCode.INTERNAL_ERROR);
     }
 
