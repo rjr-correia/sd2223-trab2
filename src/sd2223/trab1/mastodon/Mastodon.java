@@ -296,7 +296,19 @@ public class Mastodon implements Feeds {
 
                 service.signRequest(accessToken, request1);
 
-                service.execute(request1);
+                Response response = service.execute(request1);
+
+                if (response.getCode() == HTTP_OK){
+                    return ok();
+                }
+
+                if (response.getCode() == HTTP_NOT_FOUND) {
+                    return error(NOT_FOUND);
+                }
+                if (response.getCode() == HTTP_BAD_REQUEST) {
+                    return error(BAD_REQUEST);
+                }
+
             }
 
             return ok();
