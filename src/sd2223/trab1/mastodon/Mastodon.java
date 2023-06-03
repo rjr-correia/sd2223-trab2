@@ -278,14 +278,16 @@ public class Mastodon implements Feeds {
     @Override
     public Result<Void> deleteUserFeed(String user) {
         try {
-            final OAuthRequest request = new OAuthRequest(Verb.GET, getEndpoint(ACCOUNT_FOLLOWING_PATH, user));
+
+
+            final OAuthRequest request = new OAuthRequest(Verb.GET, getEndpoint(TIMELINES_PATH));
 
             service.signRequest(accessToken, request);
 
             Response response = service.execute(request);
 
             if (response.getCode() == HTTP_OK) {
-                List<String> users = JSON.decode(response.getBody(), new TypeToken<List<String>>() {
+                List<Message> messages = JSON.decode(response.getBody(), new TypeToken<List<Message>>() {
                 });
                 for (Message msg : messages) {
 
