@@ -4,6 +4,7 @@ import static sd2223.trab1.api.java.Result.error;
 import static sd2223.trab1.api.java.Result.ok;
 import static sd2223.trab1.api.java.Result.ErrorCode.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -122,7 +123,12 @@ public class Mastodon implements Feeds {
                 List<PostStatusResult> res = JSON.decode(response.getBody(), new TypeToken<List<PostStatusResult>>() {
                 });
 
-                return ok(res.stream().map(PostStatusResult::toMessage).toList());
+                List<Message> all = res.stream().map(PostStatusResult::toMessage).toList();
+                List<Message> msgs = new ArrayList<>();
+                for (Message m : all){
+                    if(m.getUser().equals(user) && m.getCreationTime() >= time) msgs.add(m);
+                }
+                return ok(msgs);
             }
 
             if (response.getCode() == HTTP_NOT_FOUND) {
@@ -280,33 +286,20 @@ public class Mastodon implements Feeds {
         try {
 
 
-            final OAuthRequest request = new OAuthRequest(Verb.GET, getEndpoint(TIMELINES_PATH));
+            Result<List<Message>> res = getMessages(user, 0);
+            if(!res.isOK()) return error(res.error());
+            List<Message> msgs = res.value();
 
-            service.signRequest(accessToken, request);
+            for (Message msg : msgs) {
 
-            Response response = service.execute(request);
+                final OAuthRequest request1 = new OAuthRequest(Verb.DELETE, getEndpoint(STATUSES_PATH + "/" + msg.getId()));
 
-            if (response.getCode() == HTTP_OK) {
-                List<Message> messages = JSON.decode(response.getBody(), new TypeToken<List<Message>>() {
-                });
-                for (Message msg : messages) {
+                service.signRequest(accessToken, request1);
 
-                    final OAuthRequest request1 = new OAuthRequest(Verb.DELETE, getEndpoint(STATUSES_PATH + "/" + msg.getId()));
-
-                    service.signRequest(accessToken, request1);
-
-                    service.execute(request1);
-                }
-
-                return ok();
+                service.execute(request1);
             }
 
-            if (response.getCode() == HTTP_NOT_FOUND) {
-                return error(NOT_FOUND);
-            }
-            if (response.getCode() == HTTP_BAD_REQUEST) {
-                return error(BAD_REQUEST);
-            }
+            return ok();
 
         } catch (Exception x) {
             x.printStackTrace();
