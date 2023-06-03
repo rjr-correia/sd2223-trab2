@@ -27,6 +27,7 @@ public class ProxyServer extends AbstractRestServer {
 
     @Override
     public void registerResources(ResourceConfig config) {
+        System.out.println("In proxy server");
         config.register( ProxyResource.class );
     }
 

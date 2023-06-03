@@ -35,8 +35,8 @@ public class Mastodon implements Feeds {
 
     static String MASTODON_SERVER_URI = MASTODON_NOVA_SERVER_URI;
 
-    private static final String clientKey = "hKcoCjq-Cjfgrs8E5GEBv2TdZSTU4acLrJL6JPepQlw";
-    private static final String clientSecret = "28-azi3iCJNCo6Vy7AHYFwdXUsw363VoyL8Dcfk9Od0";
+    private static final String clientKey = "\thKcoCjq-Cjfgrs8E5GEBv2TdZSTU4acLrJL6JPepQlw";
+    private static final String clientSecret = "\t28-azi3iCJNCo6Vy7AHYFwdXUsw363VoyL8Dcfk9Od0";
     private static final String accessTokenStr = "ztBowRMxYi5VR51vPlfj_ABMltXSOvuf_mFJw9Sx2KE";
 
     static final String STATUSES_PATH = "/api/v1/statuses";
@@ -84,6 +84,7 @@ public class Mastodon implements Feeds {
 
     @Override
     public Result<Long> postMessage(String user, String pwd, Message msg) {
+
         try {
             final OAuthRequest request = new OAuthRequest(Verb.POST, getEndpoint(STATUSES_PATH));
 
@@ -123,10 +124,10 @@ public class Mastodon implements Feeds {
                 List<PostStatusResult> res = JSON.decode(response.getBody(), new TypeToken<List<PostStatusResult>>() {
                 });
 
-                List<Message> all = res.stream().map(PostStatusResult::toMessage).toList();
                 List<Message> msgs = new ArrayList<>();
-                for (Message m : all){
-                    if(m.getUser().equals(user) && m.getCreationTime() >= time) msgs.add(m);
+
+                for (PostStatusResult m : res){
+                    if(m.getCreationTime() > time) msgs.add(m.toMessage());
                 }
                 return ok(msgs);
             }

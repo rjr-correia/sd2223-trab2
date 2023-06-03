@@ -10,16 +10,17 @@ import sd2223.trab1.mastodon.Mastodon;
 import sd2223.trab1.servers.rest.RestResource;
 
 @Singleton
-public abstract class ProxyResource extends RestResource implements FeedsService {
+public class ProxyResource extends RestResource implements FeedsService {
+
+    final protected Feeds impl;
 
     public ProxyResource( ) {
         this.impl = Mastodon.getInstance();
     }
 
-    final protected Mastodon impl;
-
     @Override
     public long postMessage(String user, String pwd, Message msg) {
+
         return super.fromJavaResult( impl.postMessage(user, pwd, msg));
     }
 
