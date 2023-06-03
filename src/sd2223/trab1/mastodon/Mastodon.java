@@ -170,7 +170,7 @@ public class Mastodon implements Feeds {
     @Override
     public Result<Message> getMessage(String user, long mid) {
         try {
-            final OAuthRequest request = new OAuthRequest(Verb.GET, getEndpoint(TIMELINES_PATH + "/" + mid));
+            final OAuthRequest request = new OAuthRequest(Verb.GET, getEndpoint(STATUSES_PATH + "/" + mid));
 
             service.signRequest(accessToken, request);
 
@@ -287,8 +287,16 @@ public class Mastodon implements Feeds {
             if (response.getCode() == HTTP_OK) {
                 List<String> users = JSON.decode(response.getBody(), new TypeToken<List<String>>() {
                 });
+                for (Message msg : messages) {
 
-                return ok(users);
+                    final OAuthRequest request1 = new OAuthRequest(Verb.DELETE, getEndpoint(STATUSES_PATH + "/" + msg.getId()));
+
+                    service.signRequest(accessToken, request1);
+
+                    service.execute(request1);
+                }
+
+                return ok();
             }
 
             if (response.getCode() == HTTP_NOT_FOUND) {
