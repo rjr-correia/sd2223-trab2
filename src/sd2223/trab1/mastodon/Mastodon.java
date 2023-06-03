@@ -180,7 +180,7 @@ public class Mastodon implements Feeds {
                 PostStatusResult res = JSON.decode(response.getBody(), new TypeToken<PostStatusResult>() {
                 });
 
-                return ok();
+                return ok(res.toMessage());
             }
 
             if (response.getCode() == HTTP_NOT_FOUND) {
@@ -195,7 +195,6 @@ public class Mastodon implements Feeds {
         }
         return error(Result.ErrorCode.INTERNAL_ERROR);
     }
-
     @Override
     public Result<Void> subUser(String user, String userSub, String pwd) {
         try {
@@ -250,17 +249,17 @@ public class Mastodon implements Feeds {
     @Override
     public Result<List<String>> listSubs(String user) {
         try {
-            final OAuthRequest request = new OAuthRequest(Verb.GET, getEndpoint(TIMELINES_PATH));
+            final OAuthRequest request = new OAuthRequest(Verb.GET, getEndpoint(ACCOUNT_FOLLOWING_PATH, user));
 
             service.signRequest(accessToken, request);
 
             Response response = service.execute(request);
 
             if (response.getCode() == HTTP_OK) {
-                List<PostStatusResult> res = JSON.decode(response.getBody(), new TypeToken<List<PostStatusResult>>() {
+                List<String> users = JSON.decode(response.getBody(), new TypeToken<List<String>>() {
                 });
 
-                return ok(res.stream().map(PostStatusResult::toMessage).toList());
+                return ok(users);
             }
 
             if (response.getCode() == HTTP_NOT_FOUND) {
@@ -278,6 +277,31 @@ public class Mastodon implements Feeds {
 
     @Override
     public Result<Void> deleteUserFeed(String user) {
-        return error(NOT_IMPLEMENTED);
+        try {
+            final OAuthRequest request = new OAuthRequest(Verb.GET, getEndpoint(ACCOUNT_FOLLOWING_PATH, user));
+
+            service.signRequest(accessToken, request);
+
+            Response response = service.execute(request);
+
+            if (response.getCode() == HTTP_OK) {
+                List<String> users = JSON.decode(response.getBody(), new TypeToken<List<String>>() {
+                });
+
+                return ok(users);
+            }
+
+            if (response.getCode() == HTTP_NOT_FOUND) {
+                return error(NOT_FOUND);
+            }
+            if (response.getCode() == HTTP_BAD_REQUEST) {
+                return error(BAD_REQUEST);
+            }
+
+        } catch (Exception x) {
+            x.printStackTrace();
+        }
+        return error(Result.ErrorCode.INTERNAL_ERROR);
+    }
     }
 }
