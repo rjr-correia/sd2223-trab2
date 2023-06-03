@@ -313,5 +313,5 @@ public class Mastodon implements Feeds {
         }
         return error(Result.ErrorCode.INTERNAL_ERROR);
     }
-    }
+
 }
