@@ -298,17 +298,9 @@ public class Mastodon implements Feeds {
 
                 Response response = service.execute(request1);
 
-                if (response.getCode() == HTTP_OK){
-                    return ok();
+                if (response.getCode() != HTTP_OK) {
+                    return error(Result.ErrorCode.INTERNAL_ERROR);
                 }
-
-                if (response.getCode() == HTTP_NOT_FOUND) {
-                    return error(NOT_FOUND);
-                }
-                if (response.getCode() == HTTP_BAD_REQUEST) {
-                    return error(BAD_REQUEST);
-                }
-
             }
 
             return ok();
