@@ -25,6 +25,13 @@ public class Message {
 		this.creationTime = System.currentTimeMillis();
 		this.text = text;
 	}
+	public Message(long id, String user, String domain, String text, long creationTime) {
+		this.id = id;
+		this.user = user;
+		this.domain = domain;
+		this.creationTime = creationTime;
+		this.text = text;
+	}
 
 	public long getId() {
 		return id;
