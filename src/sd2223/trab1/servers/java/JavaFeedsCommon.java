@@ -101,6 +101,7 @@ public abstract class JavaFeedsCommon<T extends Feeds>  implements Feeds {
 
 		var ufi = feeds.computeIfAbsent(user, FeedInfo::new );
 		synchronized (ufi.user()) {
+
 			ufi.following().add(userSub);
 		}
 		return ok();
@@ -115,6 +116,10 @@ public abstract class JavaFeedsCommon<T extends Feeds>  implements Feeds {
 
 		FeedInfo ufi = feeds.computeIfAbsent(user, FeedInfo::new);
 		synchronized (ufi.user()) {
+
+			if(!ufi.following().remove(userSub))
+				return error(NOT_FOUND);
+
 			ufi.following().remove(userSub);
 		}
 		return ok();

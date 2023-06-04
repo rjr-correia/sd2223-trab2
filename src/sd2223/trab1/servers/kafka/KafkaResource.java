@@ -129,8 +129,6 @@ public class KafkaResource extends RestResource implements FeedsServiceKafka, Re
         KafkaResource.version = sender.publish(Domain.get(), "subUser", user + "," + userSub + "," + pwd);
 
         sync.waitForResult(KafkaResource.version);
-
-
     }
 
     @Override
@@ -139,7 +137,6 @@ public class KafkaResource extends RestResource implements FeedsServiceKafka, Re
         KafkaResource.version = sender.publish(Domain.get(), "unsubscribeUser", user + "," + userSub + "," + pwd);
 
         sync.waitForResult(KafkaResource.version);
-
     }
 
     @Override

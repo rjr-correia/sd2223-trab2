@@ -16,6 +16,8 @@ public class JavaFeedsPullPreconditions extends JavaFeedsPreconditions implement
 	
 	@Override
 	public Result<Void> subUser(String user, String userSub, String pwd) {
+
+		System.out.println("In subUser");
 		
 		var ures = getUser( FeedUser.from( user, pwd ) ).error();
 		if (ures == NOT_FOUND || ures == FORBIDDEN){
