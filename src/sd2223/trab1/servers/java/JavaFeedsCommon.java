@@ -91,13 +91,9 @@ public abstract class JavaFeedsCommon<T extends Feeds>  implements Feeds {
 	@Override
 	public Result<Void> subUser(String user, String userSub, String pwd) {
 
-		System.out.println("Preconditions of User:" + user + "\n UserSub:" + userSub);
-		
 		var preconditionsResult = preconditions.subUser(user, userSub, pwd);
 		if( ! preconditionsResult.isOK() )
 			return preconditionsResult;
-
-		System.out.println("OK");
 
 		var ufi = feeds.computeIfAbsent(user, FeedInfo::new );
 		synchronized (ufi.user()) {
