@@ -20,7 +20,7 @@ public class RestFeedsPullClient extends RestFeedsClient implements FeedsPull {
 	public Result<List<Message>> pull_getTimeFilteredPersonalFeed(String user, long time) {
 		return super.reTry(() -> clt_getTimeFilteredPersonalFeed(user, time));
 	}
-	
+
 	public Result<List<Message>> clt_getTimeFilteredPersonalFeed(String user, long time) {
 		Response r = target.path(PERSONAL).path( user )
 				.queryParam(FeedsService.TIME, time)

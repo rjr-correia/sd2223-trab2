@@ -15,6 +15,7 @@ import sd2223.trab1.servers.java.JavaFeedsPull;
 import sd2223.trab1.servers.rest.RestResource;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
 public class KafkaResource extends RestResource implements FeedsServiceKafka, RecordProcessor {
@@ -26,8 +27,11 @@ public class KafkaResource extends RestResource implements FeedsServiceKafka, Re
     final SyncPoint<Result> sync;
     private static Logger Log = Logger.getLogger(KafkaServer.class.getName());
 
-
     final protected FeedsPull impl;
+
+    private static final long FEEDS_MID_PREFIX= 1_000_000_000;
+
+    protected AtomicLong serial = new AtomicLong(Domain.uuid() * FEEDS_MID_PREFIX);
 
     static long version;
 
@@ -51,7 +55,11 @@ public class KafkaResource extends RestResource implements FeedsServiceKafka, Re
             String[] parameters = r.value().split(",");
             switch (methodName) {
                 case "postMessage":
-                    result = impl.postMessageRep(parameters[0], parameters[1], //user, pwd, msg.id, msg.user, msg.domain, msg.text, msg.creationTime
+
+                    if (parameters[5].equals("null")){
+                        parameters[5] = null;
+                    }
+                    result = impl.postMessage(parameters[0], parameters[1], //user, pwd, msg.id, msg.user, msg.domain, msg.text, msg.creationTime
                             new Message(Long.parseLong(parameters[2]), parameters[3], parameters[4], parameters[5], Long.parseLong(parameters[6])));
                     break;
                 case "removeFromPersonalFeed":
@@ -78,6 +86,10 @@ public class KafkaResource extends RestResource implements FeedsServiceKafka, Re
 
     @Override
     public long postMessage(String user, String pwd, Message msg) {
+
+        Long mid = serial.incrementAndGet();
+        msg.setId(mid);
+        msg.setCreationTime(System.currentTimeMillis());
 
         KafkaResource.version = sender.publish(Domain.get(), "postMessage", user + "," + pwd + "," + msg.getId() + "," + msg.getUser() + "," + msg.getDomain() + "," + msg.getText() + "," + msg.getCreationTime());
 
