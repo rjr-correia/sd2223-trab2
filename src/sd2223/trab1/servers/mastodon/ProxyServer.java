@@ -1,19 +1,11 @@
 package sd2223.trab1.servers.mastodon;
 
-import java.net.InetAddress;
-import java.net.URI;
 import java.util.logging.Logger;
-
-import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-
 import sd2223.trab1.api.java.Feeds;
 import sd2223.trab1.servers.Domain;
 import sd2223.trab1.servers.rest.AbstractRestServer;
-import sd2223.trab1.servers.rest.RestUsersResource;
 import utils.Args;
-
-import javax.net.ssl.SSLContext;
 
 
 public class ProxyServer extends AbstractRestServer {

@@ -56,6 +56,20 @@ public abstract class JavaFeedsCommon<T extends Feeds>  implements Feeds {
 		return Result.ok(mid);
 	}
 
+	public Result<Long> postMessageRep(String user, String pwd, Message msg) {
+
+		var preconditionsResult = preconditions.postMessage(user, pwd, msg);
+		if( ! preconditionsResult.isOK() )
+			return preconditionsResult;
+
+		FeedInfo ufi = feeds.computeIfAbsent(user, FeedInfo::new );
+		synchronized (ufi.user()) {
+			ufi.messages().add(msg.getId());
+			messages.putIfAbsent(msg.getId(), msg);
+		}
+		return Result.ok(msg.getId());
+	}
+
 	@Override
 	public Result<Void> removeFromPersonalFeed(String user, long mid, String pwd) {
 

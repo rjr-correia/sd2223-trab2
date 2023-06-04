@@ -6,4 +6,6 @@ import sd2223.trab1.api.Message;
 
 public interface FeedsPull extends Feeds {
 		Result<List<Message>> pull_getTimeFilteredPersonalFeed(String user, long time);
+
+	Result postMessageRep(String parameter, String parameter1, Message message);
 }
