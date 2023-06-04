@@ -18,12 +18,14 @@ public class JavaFeedsPullPreconditions extends JavaFeedsPreconditions implement
 	public Result<Void> subUser(String user, String userSub, String pwd) {
 		
 		var ures = getUser( FeedUser.from( user, pwd ) ).error();
-		if (ures == NOT_FOUND || ures == FORBIDDEN)
-			return error(ures);
+		if (ures == NOT_FOUND || ures == FORBIDDEN){
+			System.out.println("Not found:" + user);
+			return error(ures);}
 
 		var ures2 = getUser( FeedUser.from( userSub ) ).error();
-		if (ures2 == NOT_FOUND || ures2 != FORBIDDEN)
-			return error(ures2);
+		if (ures2 == NOT_FOUND || ures2 != FORBIDDEN){
+			System.out.println("Not found:" + userSub);
+			return error(ures2);}
 
 		return ok();
 	}

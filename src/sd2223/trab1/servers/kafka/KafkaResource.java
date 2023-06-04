@@ -130,6 +130,7 @@ public class KafkaResource extends RestResource implements FeedsServiceKafka, Re
 
         sync.waitForResult(KafkaResource.version);
 
+
     }
 
     @Override
